@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://127.0.0.1:8477; script-src 'self' https://cdn.socket.io 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src http://127.0.0.1:8477 ws://127.0.0.1:8477; img-src 'self' data: blob:;"/>
+  <title>Eldorado Valorant Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+
+<!-- Custom titlebar -->
+<div class="titlebar" id="titlebar">
+  <div class="tb-left">
+    <div class="tb-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="12,2 22,7 22,17 12,22 2,17 2,7" stroke="#f59e0b" stroke-width="1.5" fill="rgba(245,158,11,0.1)"/><polygon points="12,6 18,9.5 18,14.5 12,18 6,14.5 6,9.5" fill="#f59e0b" opacity="0.3"/><circle cx="12" cy="12" r="2.5" fill="#f59e0b"/></svg>
+    </div>
+    <span class="tb-title">ELDORADO <span class="gold">SNIPER</span></span>
+    <div class="tb-status" id="tbStatus">
+      <span class="status-dot stopped" id="tbDot"></span>
+      <span id="tbStatusText">Stopped</span>
+    </div>
+  </div>
+  <div class="tb-drag"></div>
+  <div class="tb-controls">
+    <button class="tb-btn" id="tbMin">─</button>
+    <button class="tb-btn" id="tbMax">□</button>
+    <button class="tb-btn tb-close" id="tbClose">✕</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="nav">
+      <button class="nav-item active" data-page="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-page="general">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        General
+      </button>
+      <button class="nav-item" data-page="rank-boost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Rank Boost
+      </button>
+      <button class="nav-item" data-page="placements">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Placements
+      </button>
+      <button class="nav-item" data-page="net-wins">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Net Wins
+      </button>
+      <button class="nav-item" data-page="coaching">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Coaching
+      </button>
+      <button class="nav-item" data-page="auto-chat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Auto-Chat
+      </button>
+      <button class="nav-item" data-page="console">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        Console
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="uptime-display" id="uptimeDisplay" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="uptimeText">00:00:00</span>
+      </div>
+      <div class="bot-status-mini" id="botStatusMini">
+        <span class="status-dot stopped" id="miniDot"></span>
+        <span id="miniStatusText">Stopped</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <div class="header-actions">
+          <label class="fast-toggle" title="Fast mode uses direct API calls (~150ms per offer)">
+            <span class="ft-label">Normal</span>
+            <input type="checkbox" id="fastModeToggle" onchange="toggleFastMode()"/>
+            <span class="ft-slider"></span>
+            <span class="ft-label gold">⚡ Fast</span>
+          </label>
+          <button class="btn btn-start" id="btnStart" onclick="startBot()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Start Bot
+          </button>
+          <button class="btn btn-stop" id="btnStop" onclick="stopBot()" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+            Stop Bot
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-body"><div class="stat-val" id="statOffersToday">0</div><div class="stat-lbl">Offers Today</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-body"><div class="stat-val gold" id="statRevenueToday">$0.00</div><div class="stat-lbl">Revenue Today</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-body"><div class="stat-val" id="statOffersWeek">0</div><div class="stat-lbl">Offers This Week</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏦</div>
+          <div class="stat-body"><div class="stat-val gold" id="statRevenueWeek">$0.00</div><div class="stat-lbl">Revenue This Week</div></div>
+        </div>
+      </div>
+
+      <!-- Login status banner -->
+      <div class="login-banner" id="loginBanner" style="display:none">
+        <div class="login-banner-icon">u26a0ufe0f</div>
+        <div class="login-banner-text"><strong>Not logged in to Eldorado.gg</strong><span>The bot opened a dedicated Chrome window — log into your Eldorado account there, then click Start Bot again.</span></div>
+        <button class="btn btn-save" onclick="startBot()">Retry</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Live Console</h3>
+          <button class="btn-link" onclick="goTo('console')">View Full →</button>
+        </div>
+        <div class="console-box mini" id="consoleMini"></div>
+        <div class="console-input-row">
+          <input type="text" class="input-field" id="miniInput" placeholder="Type here (e.g. license key)..." onkeydown="if(event.key==='Enter')sendInput('mini')"/>
+          <button class="btn btn-sm" onclick="sendInput('mini')">Send</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-subtitle">HISTORY</div>
+            <h3>Activity Log</h3>
+            <div class="card-desc">All boosting requests and offers sent</div>
+          </div>
+          <select class="select-field" id="actFilter" onchange="loadActivity()">
+            <option value="all">All Types</option>
+            <option value="rank_boost">Rank Boost</option>
+            <option value="net_wins">Net Wins</option>
+            <option value="placement">Placement</option>
+            <option value="coaching">Coaching</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Time</th><th>Type</th><th>Region</th><th>Boost</th><th>Price</th><th></th></tr></thead>
+            <tbody id="activityTbody">
+              <tr class="empty-row"><td colspan="6">No activity yet. Start the bot to see offers here.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="actPagination"></div>
+      </div>
+    </section>
+
+    <!-- ── GENERAL SETTINGS ── -->
+    <section class="page" id="page-general">
+      <div class="page-header">
+        <h1>General Settings</h1>
+        <button class="btn btn-save" onclick="saveConfig()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Configuration
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Active Regions</h3></div>
+        <div class="card-body">
+          <p class="hint">Select which regions to accept offers from.</p>
+          <div class="checkbox-grid" id="regionsGrid"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Bot Behavior</h3></div>
+        <div class="card-body">
+          <div class="form-row">
+            <label>Refresh Interval (seconds)<br><span class="hint">How often the bot checks for new requests.</span></label>
+            <input type="number" id="cfgRefresh" min="1" max="60" class="input-field small"/>
+          </div>
+          <div class="form-row">
+            <label>Reject Console Players<br><span class="hint">Automatically skip PS4/PS5/Xbox requests.</span></label>
+            <label class="toggle"><input type="checkbox" id="cfgRejectConsole"/><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Discord Notifications</h3></div>
+        <div class="card-body">
+          <p class="hint">Get real-time alerts on Discord when orders are sniped, messages received, or offers accepted.<br>
+          How to get a webhook: Discord channel → Edit → Integrations → Webhooks → New Webhook → Copy URL.</p>
+          <div class="form-row">
+            <label>Enable Discord Notifications</label>
+            <label class="toggle"><input type="checkbox" id="cfgDwEnabled"/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <label>Webhook URL<br><span class="hint">https://discord.com/api/webhooks/...</span></label>
+            <input type="text" id="cfgDwUrl" class="input-field mono" placeholder="https://discord.com/api/webhooks/..."/>
+          </div>
+          <div class="form-row">
+            <label>Test Webhook<br><span class="hint">Sends a test message and saves the URL.</span></label>
+            <button class="btn btn-save" onclick="testAndSaveDiscord()" style="max-width:180px">Test &amp; Save</button>
+          </div>
+          <div class="form-row">
+            <label>Notify on New Orders</label>
+            <label class="toggle"><input type="checkbox" id="cfgDwNewOrder"/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <label>Notify on Buyer Messages</label>
+            <label class="toggle"><input type="checkbox" id="cfgDwMsg"/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-row">
+            <label>Notify on Orders Accepted</label>
+            <label class="toggle"><input type="checkbox" id="cfgDwAccepted"/><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RANK BOOST ── -->
+    <section class="page" id="page-rank-boost">
+      <div class="page-header">
+        <h1>Rank Boosting</h1>
+        <button class="btn btn-save" onclick="saveConfig()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="form-row">
+          <label>Enable Rank Boost<br><span class="hint">Auto-place offers on Rank Boost requests.</span></label>
+          <label class="toggle"><input type="checkbox" id="cfgRbEnabled"/><span class="toggle-slider"></span></label>
+        </div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><h3>Tier Pricing</h3></div>
+        <div class="card-body">
+          <p class="hint">Price per division for each tier. The bot sums up divisions between current and target rank.</p>
+          <div class="tier-table"><div class="tier-header"><span>Tier</span><span>$/Division</span><span>Hours/Div</span><span>Skip</span></div><div id="rbTiers"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Completion Method</h3></div>
+        <div class="card-body">
+          <p class="hint">Price multiplier based on Solo vs Duo boost.</p>
+          <div class="tier-table"><div class="tier-header"><span>Method</span><span>Multiplier</span><span>Skip</span><span></span></div><div id="rbMethods"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Modifiers</h3></div>
+        <div class="card-body">
+          <p class="hint">Extra multipliers for special requests (offline mode, etc).</p>
+          <div class="tier-table"><div class="tier-header"><span>Modifier</span><span>Extra ×</span><span>Skip</span><span></span></div><div id="rbModifiers"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PLACEMENTS ── -->
+    <section class="page" id="page-placements">
+      <div class="page-header">
+        <h1>Placements</h1>
+        <button class="btn btn-save" onclick="saveConfig()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="form-row"><label>Enable Placements<br><span class="hint">Auto-offer on placement game requests.</span></label><label class="toggle"><input type="checkbox" id="cfgPlEnabled"/><span class="toggle-slider"></span></label></div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><h3>Placement Pricing</h3></div>
+        <div class="card-body">
+          <p class="hint">Price = $/game × number of games requested.</p>
+          <div class="form-row"><label>Price per Game ($)</label><input type="number" step="0.5" id="cfgPlPrice" class="input-field small"/></div>
+          <div class="form-row"><label>Total Games</label><input type="number" id="cfgPlGames" class="input-field small"/></div>
+          <div class="form-row"><label>Delivery Days</label><input type="number" id="cfgPlDelivery" class="input-field small"/></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── NET WINS ── -->
+    <section class="page" id="page-net-wins">
+      <div class="page-header">
+        <h1>Net Wins</h1>
+        <button class="btn btn-save" onclick="saveConfig()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="form-row"><label>Enable Net Wins<br><span class="hint">Auto-offer on Net Wins requests.</span></label><label class="toggle"><input type="checkbox" id="cfgNwEnabled"/><span class="toggle-slider"></span></label></div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><h3>Tier Pricing</h3></div>
+        <div class="card-body">
+          <div class="tier-table"><div class="tier-header"><span>Tier</span><span>$/Win</span><span>Hours/Win</span><span>Skip</span></div><div id="nwTiers"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── COACHING ── -->
+    <section class="page" id="page-coaching">
+      <div class="page-header">
+        <h1>Coaching</h1>
+        <button class="btn btn-save" onclick="saveConfig()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="form-row"><label>Enable Coaching<br><span class="hint">Auto-offer on Coaching requests.</span></label><label class="toggle"><input type="checkbox" id="cfgCoEnabled"/><span class="toggle-slider"></span></label></div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><h3>Tier Pricing</h3></div>
+        <div class="card-body">
+          <div class="tier-table"><div class="tier-header"><span>Tier</span><span>$/Game</span><span>Hours/Game</span><span>Skip</span></div><div id="coTiers"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AUTO CHAT ── -->
+    <section class="page" id="page-auto-chat">
+      <div class="page-header">
+        <h1>Auto-Chat</h1>
+        <button class="btn btn-save" onclick="saveConfig()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="form-row"><label>Enable Auto-Chat<br><span class="hint">Sends a message to the buyer automatically after placing an offer.</span></label><label class="toggle"><input type="checkbox" id="cfgChatEnabled"/><span class="toggle-slider"></span></label></div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><h3>Message</h3></div>
+        <div class="card-body">
+          <p class="hint">Each line = one line in the chat message. Emojis are supported.</p>
+          <textarea id="cfgChatMessages" class="textarea-field" rows="10" placeholder="Write your message here..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Image to Send</h3></div>
+        <div class="card-body">
+          <div class="img-picker-row">
+            <input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="uploadImage(this)"/>
+            <button class="btn btn-save" onclick="document.getElementById('imgFileInput').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Image
+            </button>
+            <span class="hint">PNG, JPG, GIF — sent after the text message.</span>
+          </div>
+          <div id="chatImagesList" class="img-chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONSOLE ── -->
+    <section class="page" id="page-console">
+      <div class="page-header">
+        <h1>Console</h1>
+        <div class="header-actions">
+          <button class="btn btn-sm" onclick="clearConsole()">Clear</button>
+          <button class="btn btn-start" id="btnStart2" onclick="startBot()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start</button>
+          <button class="btn btn-stop" id="btnStop2" onclick="stopBot()" style="display:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg> Stop</button>
+        </div>
+      </div>
+      <div class="card console-full-card">
+        <div class="console-box full" id="consoleFull"></div>
+        <div class="console-input-row">
+          <input type="text" class="input-field" id="fullInput" placeholder="Type here (e.g. license key)..." onkeydown="if(event.key==='Enter')sendInput('full')"/>
+          <button class="btn btn-sm" onclick="sendInput('full')">Send</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
