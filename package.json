@@ -1,0 +1,87 @@
+{
+  "name": "eldorado-valorant-bot",
+  "version": "1.0.0",
+  "description": "Eldorado.gg Valorant Boosting Automation Bot",
+  "author": "EldoradoBot",
+  "main": "electron.js",
+  "scripts": {
+    "start": "node scripts/launch.js",
+    "dev": "node scripts/launch.js --dev",
+    "build": "electron-builder --win --x64"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "playwright": "^1.40.0",
+    "cors": "^2.8.5",
+    "uuid": "^9.0.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.eldorado.valorantbot",
+    "productName": "EldoradoBot",
+    "copyright": "Copyright 2025",
+    "forceCodeSigning": false,
+    "asar": false,
+    "files": [
+      "electron.js",
+      "preload.js",
+      "server/**/*",
+      "ui/**/*",
+      "node_modules/**/*",
+      "!node_modules/electron/**/*",
+      "!node_modules/electron-builder/**/*",
+      "!node_modules/.cache/**/*",
+      "!dist/**/*",
+      "!data/**/*",
+      "!**/*.map",
+      "!**/*.md"
+    ],
+    "extraResources": [
+      {
+        "from": "${env.LOCALAPPDATA}/ms-playwright",
+        "to": "ms-playwright",
+        "filter": [
+          "chromium-*/**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "ui/icon.png",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "EldoradoBot",
+      "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "EldoradoBot-Portable.exe"
+    },
+    "directories": {
+      "output": "dist",
+      "buildResources": "ui"
+    }
+  }
+}
